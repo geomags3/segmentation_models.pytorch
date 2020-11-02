@@ -21,9 +21,11 @@ class SegmentationModel(torch.nn.Module):
         if self.classification_head is not None:
             labels = self.classification_head(features[-1])
 
-            if labels.max < 0.7:  # 0.7 - threshold for each class
+            if labels.max() < 0.7:  # 0.7 - threshold for each class
+                print('Labels: {labels} less then threshold 0.7')
                 return None, labels
             
+            print('Labels: {labels} greater then threshold 0.7.\nRun decoder...')
             decoder_output = self.decoder(*features)
             masks = self.segmentation_head(decoder_output)
 
